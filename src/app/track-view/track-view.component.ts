@@ -94,7 +94,7 @@ export class TrackViewComponent implements AfterViewInit, OnInit  {
   updatePosition = true;
   currentVideo?: string;
 
-  autoMode = false;
+  autoMode = true;
   videoMode?: VideoMode;
 
   randomDest?: number | string;
@@ -112,7 +112,7 @@ export class TrackViewComponent implements AfterViewInit, OnInit  {
   ngOnInit(): void {
     this.breakpointObserver.observe(["(min-width: 1250px)"]).subscribe(result => this.showTitle1 = result.matches);
     this.breakpointObserver.observe(["(min-width: 1570px)"]).subscribe(result => this.showMinMaxEle = result.matches);
-    this.breakpointObserver.observe(["(orientation: portrait)"]).subscribe(result => this.portrait = result.matches);
+    this.breakpointObserver.observe(["(max-aspect-ratio: 5/4)"]).subscribe(result => this.portrait = result.matches);
   }
 
   ngAfterViewInit(): void {

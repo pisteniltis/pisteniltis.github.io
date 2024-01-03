@@ -220,13 +220,23 @@ mat-select-trigger mat-icon {
     display:table-row;
 }
 
+.link {
+    width:20px;
+    float:left;
+    margin-right:10px;    
+}
+
+.link.showTitle1 {
+    width:40px;
+}
+
 .link-button {
-    width: 56px; 
     margin-bottom:10px;
     z-index: 4;
     pointer-events:auto;
     background: rgba(0,0,0,0.1); 
 }
+
 
 .hide-links-bar {
     transform: scale(0);

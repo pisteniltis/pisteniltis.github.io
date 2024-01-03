@@ -43,21 +43,20 @@
         (stateChange)="syncPlayer2()" (ready)="syncPlayer2()"
         [playerVars]="{rel: 0, autoplay: 1, modestbranding: 1, fs: 0, showinfo: 0, controls: 0, enablejsapi: 1, origin: document.domain}">
     </youtube-player>
-    <span *ngIf="showAsTrack" class="youtube-player-text" style="width:300px;left:10px;top:60px">
-      <img *ngIf="showAsTrack!.title" style="width:50%;float:left;margin-right:10px;position:absolute" [src]="showAsTrack.image">
-      <span *ngIf="showAsTrack!.title">{{showAsTrack!.title}}</span>
+    <span *ngIf="showAsTrack" class="youtube-player-text" style="width:300px;left:12px;top:60px">
+      <img *ngIf="showAsTrack!.title" class="link" [class.showTitle1]="showTitle1" [src]="showAsTrack.image">
       <span *ngIf="showAsTrack!.subtitle"><br/>{{showAsTrack!.subtitle}}</span>
     </span>
-    <div *ngIf="currentTrack" class="links-bar" [class.hide-links-bar]="currentLinksLeft == null" style="left:10px;">
+    <div *ngIf="currentTrack" class="links-bar" [class.hide-links-bar]="currentLinksLeft == null" style="left:12px;">
       <div *ngFor="let link of currentLinksLeft" class="links-row">
-        <a class="mat-fab link-button" matRipple [routerLink]="link.route" style="float:left;margin-right:10px;"><img style="width: 56px;" [src]="link.image"></a>
+        <a class="mat-fab link-button link" [class.showTitle1]="showTitle1" matRipple [routerLink]="link.route"><img class="link" [class.showTitle1]="showTitle1" [src]="link.image"></a>
         <span *ngIf="link!.title">{{link!.title}}</span>
         <span *ngIf="link!.subtitle"><br/>{{link!.subtitle}}</span>
       </div>
     </div>
-    <div *ngIf="currentTrack" class="links-bar" [class.hide-links-bar]="currentLinksRight == null" style="right:10px;">
+    <div *ngIf="currentTrack" class="links-bar" [class.hide-links-bar]="currentLinksRight == null" style="right:12px;">
       <div *ngFor="let link of currentLinksRight" class="links-row" style="float:right;">
-        <a class="mat-fab link-button" matRipple [routerLink]="link.route" style="float:right;margin-left:10px;"><img style="height: 56px" [src]="link.image"></a>
+        <a class="mat-fab link-button link" [class.showTitle1]="showTitle1" matRipple [routerLink]="link.route"><img class="link" [class.showTitle1]="showTitle1" [src]="link.image"></a>
         <span *ngIf="link!.title">{{link!.title}}</span>
         <span *ngIf="link!.subtitle"><br/>{{link!.subtitle}}</span>
       </div>
@@ -97,7 +96,7 @@
     <div class="youtube-player-text pause-bar" [class.playing]="playing" [class.no-video]="!isVideo">
       <div *ngIf="!playing" style="margin:10px">Weiterfahren auf<br/>&nbsp;
         <div *ngFor="let link of allLinks" style="display: table-cell;margin-left:10px;margin-top:30px">
-          <a class="mat-fab link-button" matRipple [routerLink]="link.route" style="float:left;margin:0 10px;"><img style="height: 56px" [src]="link.image"></a>
+          <a class="mat-fab link-button link" [class.showTitle1]="showTitle1" matRipple [routerLink]="link.route" style="float:left;margin:0 10px;"><img class="link" [class.showTitle1]="showTitle1" [src]="link.image"></a>
           <span *ngIf="link!.title">{{link!.title}}</span>
           <span *ngIf="link!.subtitle"><br/>{{link!.subtitle}}</span>
         </div>
