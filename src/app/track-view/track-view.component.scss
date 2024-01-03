@@ -1,15 +1,55 @@
 .component-container {
     background: white;
 }
+.titleIcon {
+    left:5%;
+    bottom:92%;
+    width:50px;
+    position:absolute;    
+}
+.title1 {
+    margin-left:55px;
+    left:5%;
+    bottom:92%;
+    position:absolute;
+    font-family:Roboto,Arial,sans-serif;
+    font-size:2em;
+    margin-bottom:0.1em;
+}
+
+.title2 {
+    margin-left:55px;
+    left:5%;
+    bottom:92%;
+    position:absolute;
+    font-family:Roboto,Arial,sans-serif;
+    font-size:1.2em;
+    margin-bottom:0.35em;
+    vertical-align:bottom;    
+}
+.title2.showTitle1 {
+    left:15%;
+}
 
 .map-container {
+    position: absolute;    
+    z-index:2;
+    transition: left,width 0.5s ease;
+}
+
+.map-container.landscape {
     width:35%;
     left:5%;
     height:28vw;
     top:10%;
-    position: absolute;    
-    z-index:2;
-    transition: left,width 0.5s ease;
+}
+
+.map-container.portrait {
+    width:85%;
+    left:5%;
+    top:15%;
+    margin-top:51vw;
+    bottom:5%;
 }
 
 .map-container.no-video {
@@ -28,12 +68,22 @@
 }
 
 .ele-slider-container {
-    left:42%;
     width:3%;
-    top:10%;
-    height:28vw;
     position: absolute;
     transition: left 0.5s ease;
+}
+
+.ele-slider-container.landscape {
+    right:55%;
+    top:10%;
+    height:28vw;
+}
+
+.ele-slider-container.portrait {
+    right:5%;
+    top:15%;
+    margin-top:51vw;
+    bottom:5%;
 }
 
 .ele-slider-container.no-video {
@@ -76,6 +126,11 @@
     height:28vw;
     top:10%;
     position: absolute;
+}
+
+.youtube-container.portrait {
+    width:90%;
+    height:51vw;
 }
 
 .youtube-container.fullscreen {

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component,  ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { GoogleMap } from '@angular/google-maps';
 import { MatSelectChange } from '@angular/material/select';
 import { MatSlider } from '@angular/material/slider';
@@ -6,6 +6,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { YouTubePlayer } from '@angular/youtube-player';
 import { interval } from 'rxjs';
 import { Track, TrackService, Navigation, Link } from '../track.service';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { DOCUMENT } from '@angular/common';
 
 export const WEIGHT_SELECTED = 3;
 export const WEIGHT_CURRENT = 2;
@@ -32,7 +34,8 @@ export interface LinkItem {
   templateUrl: './track-view.component.html',
   styleUrls: ['./track-view.component.scss']
 })
-export class TrackViewComponent implements AfterViewInit  {
+
+export class TrackViewComponent implements AfterViewInit, OnInit  {
 
   @ViewChild("youtubePlayer") youtubePlayer!: YouTubePlayer;
   @ViewChild("youtubePlayer2") youtubePlayer2!: YouTubePlayer;
@@ -100,7 +103,17 @@ export class TrackViewComponent implements AfterViewInit  {
   currentLinksRight?: LinkItem[];
   allLinks?: LinkItem[];
 
-  constructor(private route: ActivatedRoute, private router: Router, public trackService: TrackService) { }
+  public showTitle1 = true;
+  public showMinMaxEle = true;
+  public portrait = false;
+
+  constructor(private route: ActivatedRoute, private router: Router, public trackService: TrackService, private breakpointObserver: BreakpointObserver, @Inject(DOCUMENT) public document: Document) { }
+
+  ngOnInit(): void {
+    this.breakpointObserver.observe(["(min-width: 1250px)"]).subscribe(result => this.showTitle1 = result.matches);
+    this.breakpointObserver.observe(["(min-width: 1570px)"]).subscribe(result => this.showMinMaxEle = result.matches);
+    this.breakpointObserver.observe(["(orientation: portrait)"]).subscribe(result => this.portrait = result.matches);
+  }
 
   ngAfterViewInit(): void {
 
@@ -314,7 +327,11 @@ export class TrackViewComponent implements AfterViewInit  {
     var coords = this.trackService.getCoordsByTimeDiff(this.currentTrack!, time);
     if (coords?.ele && this.eleSlider) this.eleSlider.value = Math.trunc(coords.ele);
     if (this.googleMap.googleMap?.getMapTypeId() == "plan") coords = this.trackService.getCoordsByCoordsAndTimeDiff(time, this.currentTrack!.planCoords);
-    if (coords) this.positionMarker?.setPosition(coords);
+    if (coords) 
+    {
+      this.positionMarker?.setPosition(coords);
+      this.googleMap.googleMap?.setCenter(coords);
+    }
     if (this.positionSlider && this.updatePosition) this.positionSlider.value = time;
     if (this.autoMode) this.getCurrentLinks("none");
     this.currentLinksLeft = this.getCurrentLinks("left").reverse();
