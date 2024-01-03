@@ -1,0 +1,107 @@
+<img src="assets/images/iltis.png" style="left:5%;top:2%;height:6%;position:absolute;">
+<span style="left:10%;bottom:92%;position:absolute;font-family:Roboto,Arial,sans-serif;font-size:2em;margin-bottom:0.1em;">PistenIltis</span>
+<span style="left:20%;bottom:92%;position:absolute;font-family:Roboto,Arial,sans-serif;font-size:1.2em;margin-bottom:0.35em;vertical-align:bottom;">virtuelle Skigebietserkundung</span>
+<a href="https://www.turracherhoehe.at"><img src="assets/turrach/images/logo.svg" style="right:5%;bottom:92%;width:16%;position:absolute;"></a>
+<div #componentContainer class="component-container">
+  <div #mapContainer class="map-container" [class.no-video]="!isVideo" [class.fullscreen]="isFullscreen">
+    <google-map #googleMap
+      height="100%"
+      width="100%"
+      [options]="mapOptions">
+    </google-map>
+    <button *ngIf="trackService.planOptions" style="top:10px;left:10px;position: absolute;" mat-raised-button>
+      <mat-icon matTooltip="Landkarte">satellite_alt</mat-icon>
+      <mat-slide-toggle (change)="changeMapType($event.checked)"></mat-slide-toggle>
+      <mat-icon matTooltip="Pistenplan">map</mat-icon>
+    </button>
+    <!--<img *ngIf="googleMap?.googleMap?.getMapTypeId()=='plan'" src="assets/turrach/images/pistenplan.png" style="top:60px;left:-145px;position: absolute;opacity: 0.4;pointer-events:none;">-->
+    <!--<img *ngIf="googleMap?.googleMap?.getMapTypeId()=='plan'" src="assets/turrach/images/pistenplan_bspline.svg" style="width:840px;top:59px;left:345px;position: absolute;opacity: 0.4;pointer-events:none;"><-->
+  </div>
+  <div *ngIf="!isFullscreen || !isVideo" class="ele-slider-container" [class.no-video]="!isVideo" [class.fullscreen]="isFullscreen">
+    <div style="top:0">{{trackService.maxEle}} m</div>
+    <mat-slider #eleSlider class="ele-slider" vertical [min]="Math.trunc(trackService.minEle/100)*100" [max]="Math.trunc(trackService.maxEle/100)*100+100" thumbLabel tickInterval="100"></mat-slider>
+    <div style="bottom:0">{{trackService.minEle}} m</div>
+    <mat-icon style="margin-left: 8px;">terrain</mat-icon>
+  </div>
+  <div #youtubeContainer class="youtube-container" [class.video-ended]="ended" [class.fullscreen]="isFullscreen" [class.no-video]="!isVideo">
+    <youtube-player [class.no-video]="!isVideo" #youtubePlayer
+        [videoId]="currentVideo"
+        [startSeconds]="currentTrack?.start"
+        suggestedQuality="highres"
+        [width]="youtubeContainer.clientWidth"
+        [height]="youtubeContainer.clientHeight"
+        (stateChange)="onStateChange($event)"
+        (ready)="onReady($event)"
+        [playerVars]="{rel: 0, autoplay: 1, modestbranding: 1, fs: 0, showinfo: 0, controls: 0, enablejsapi: 1, origin: 'pisteniltis.github.io'}">
+    </youtube-player>
+    <youtube-player class="youtube-player2" *ngIf="videoMode=='pip'" [class.no-video]="!isVideo" #youtubePlayer2
+        [videoId]="currentTrack?.videoBack"
+        [startSeconds]="currentTrack?.start"
+        suggestedQuality="highres"
+        [width]="youtubeContainer.clientWidth/3"
+        [height]="youtubeContainer.clientHeight/3"
+        (stateChange)="syncPlayer2()" (ready)="syncPlayer2()"
+        [playerVars]="{rel: 0, autoplay: 1, modestbranding: 1, fs: 0, showinfo: 0, controls: 0, enablejsapi: 1, origin: 'pisteniltis.github.io'}">
+    </youtube-player>
+    <span *ngIf="showAsTrack" class="youtube-player-text" style="width:300px;left:70px;top:60px">
+      <img *ngIf="showAsTrack!.title" style="width: 50px;float:left;margin-right:10px;" [src]="showAsTrack.image">
+      <span *ngIf="showAsTrack!.title">{{showAsTrack!.title}}</span>
+      <span *ngIf="showAsTrack!.subtitle"><br/>{{showAsTrack!.subtitle}}</span>
+    </span>
+    <div *ngIf="currentTrack" class="links-bar" [class.hide-links-bar]="currentLinksLeft == null" style="left:10px;">
+      <div *ngFor="let link of currentLinksLeft" class="links-row">
+        <a class="mat-fab link-button" matRipple [routerLink]="link.route" style="float:left;margin-right:10px;"><img style="width: 56px;" [src]="link.image"></a>
+        <span *ngIf="link!.title">{{link!.title}}</span>
+        <span *ngIf="link!.subtitle"><br/>{{link!.subtitle}}</span>
+      </div>
+    </div>
+    <div *ngIf="currentTrack" class="links-bar" [class.hide-links-bar]="currentLinksRight == null" style="right:10px;">
+      <div *ngFor="let link of currentLinksRight" class="links-row" style="float:right;">
+        <a class="mat-fab link-button" matRipple [routerLink]="link.route" style="float:right;margin-left:10px;"><img style="height: 56px" [src]="link.image"></a>
+        <span *ngIf="link!.title">{{link!.title}}</span>
+        <span *ngIf="link!.subtitle"><br/>{{link!.subtitle}}</span>
+      </div>
+    </div>
+    <mat-toolbar *ngIf="isVideo" class="youtube-player-text" style="width:660px;bottom:0">
+      <!--<button mat-raised-button matTooltip="360°">
+        <mat-slide-toggle [checked]="mode360" (change)="onChange360()"></mat-slide-toggle>
+        <mat-icon>360</mat-icon>
+      </button>-->
+      <button mat-raised-button matTooltip="Videoauswahl">
+        <mat-select [value]="videoMode" (selectionChange)="onChangeVideoMode($event)">
+          <mat-select-trigger><mat-icon>{{getVideoModeIcon(videoMode!)}}</mat-icon></mat-select-trigger>
+          <mat-option *ngFor="let m of availableVideoModes" [value]="m"><mat-icon>{{getVideoModeIcon(m)}}</mat-icon>{{getVideoModeText(m)}}</mat-option>
+        </mat-select>
+      </button>
+      <button mat-raised-button matTooltip="automatisch auf zufälliger Piste weiterfahren">
+        <mat-slide-toggle [(ngModel)]="autoMode" ></mat-slide-toggle>
+        <mat-icon>shuffle</mat-icon>
+      </button>
+      <button mat-raised-button>
+        <mat-icon (click)="onMuteButton()" [matTooltip]="volumeSlider.value == 0 ? 'Stummschaltung aufheben' : 'Stummschalten'">{{volumeSlider.value == 0 ? 'volume_off' : volumeSlider.value < 50 ? 'volume_down' : 'volume_up'}}</mat-icon>
+        <mat-slider #volumeSlider (change)="onChangeVolume()" max="100" color="primary" style="width:60px;min-width:60px;"></mat-slider>
+      </button>
+      <button mat-raised-button> 
+        <mat-icon (click)="onPlayPause()" [matTooltip]="playing ? 'Pause' : 'Wiedergabe'">{{playing ? 'pause' : 'play_arrow'}}</mat-icon>
+        {{formatTime(youtubePlayer?.getCurrentTime())}}
+        <mat-slider #positionSlider (change)="onChangePosition()" (input)="onInputPosition()" thumbLabel [displayWith]="formatTime" tickInterval="60" color="primary" style="width:200px;"></mat-slider>
+      </button>
+      <button mat-raised-button>
+        <mat-icon>slow_motion_video</mat-icon>
+        <mat-select (selectionChange)="onChangeSpeed($event)" [value]="youtubePlayer?.getPlaybackRate() || 1" matTooltip="Wiedergabegeschwindigkeit">
+          <mat-option *ngFor="let s of youtubePlayer.getAvailablePlaybackRates()" [value]="s">{{s}}x</mat-option>
+        </mat-select>
+        </button>
+      <button mat-raised-button (click)="onChangeFullscreen()" [matTooltip]="isFullscreen ? 'Vollbild beenden' : 'Vollbild'"><mat-icon>{{isFullscreen ? 'fullscreen_exit' : 'fullscreen'}}</mat-icon></button>
+    </mat-toolbar>
+    <div class="youtube-player-text pause-bar" [class.playing]="playing" [class.no-video]="!isVideo">
+      <div *ngIf="!playing" style="margin:10px">Weiterfahren auf<br/>&nbsp;
+        <div *ngFor="let link of allLinks" style="display: table-cell;margin-left:10px;margin-top:30px">
+          <a class="mat-fab link-button" matRipple [routerLink]="link.route" style="float:left;margin:0 10px;"><img style="height: 56px" [src]="link.image"></a>
+          <span *ngIf="link!.title">{{link!.title}}</span>
+          <span *ngIf="link!.subtitle"><br/>{{link!.subtitle}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
