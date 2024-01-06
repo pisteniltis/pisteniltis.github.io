@@ -388,6 +388,18 @@ export class TrackViewComponent implements AfterViewInit, OnInit  {
       flatMap(n => this.getLinkItems((n.links||[]).filter(l => {if (keys[l.nr]) return false; keys[l.nr] = true; return true;}).filter(l => l).map(l => l!), n.timeDiff)).map(l => l!);
   }
 
+  public onLinkMouseOver(id: string | number)
+  {
+    const track = this.trackService.tracksById[id];
+    this.setWeight(track, WEIGHT_SELECTED);
+  }
+
+  public onLinkMouseOut(id: string | number)
+  {
+    const track = this.trackService.tracksById[id];
+    this.setWeight(track, track.nr == this.currentTrack?.nr ? WEIGHT_CURRENT : WEIGHT);
+  }
+
   public get isFullscreen()
   {
     return !!document.fullscreenElement;

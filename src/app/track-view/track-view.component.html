@@ -49,14 +49,16 @@
     </span>
     <div *ngIf="currentTrack" class="links-bar" [class.hide-links-bar]="currentLinksLeft == null" style="left:12px;">
       <div *ngFor="let link of currentLinksLeft" class="links-row">
-        <a class="mat-fab link-button link" [class.showTitle1]="showTitle1" matRipple [routerLink]="link.route"><img class="link" [class.showTitle1]="showTitle1" [src]="link.image"></a>
+        <a class="mat-fab link-button link" [class.showTitle1]="showTitle1" [routerLink]="link.route"
+        (mouseover)="onLinkMouseOver(link.nr)" (mouseout)="onLinkMouseOut(link.nr)"><img class="link" [class.showTitle1]="showTitle1" [src]="link.image"></a>
         <span *ngIf="link!.title">{{link!.title}}</span>
         <span *ngIf="link!.subtitle"><br/>{{link!.subtitle}}</span>
       </div>
     </div>
     <div *ngIf="currentTrack" class="links-bar" [class.hide-links-bar]="currentLinksRight == null" style="right:12px;">
       <div *ngFor="let link of currentLinksRight" class="links-row" style="float:right;">
-        <a class="mat-fab link-button link" [class.showTitle1]="showTitle1" matRipple [routerLink]="link.route"><img class="link" [class.showTitle1]="showTitle1" [src]="link.image"></a>
+        <a class="mat-fab link-button link" [class.showTitle1]="showTitle1" [routerLink]="link.route" 
+          (mouseover)="onLinkMouseOver(link.nr)" (mouseout)="onLinkMouseOut(link.nr)"><img class="link" [class.showTitle1]="showTitle1" [src]="link.image"></a>
         <span *ngIf="link!.title">{{link!.title}}</span>
         <span *ngIf="link!.subtitle"><br/>{{link!.subtitle}}</span>
       </div>
@@ -93,10 +95,11 @@
         </button>
       <button mat-raised-button (click)="onChangeFullscreen()" [matTooltip]="isFullscreen ? 'Vollbild beenden' : 'Vollbild'"><mat-icon>{{isFullscreen ? 'fullscreen_exit' : 'fullscreen'}}</mat-icon></button>
     </mat-toolbar>
-    <div class="youtube-player-text pause-bar" [class.playing]="playing" [class.no-video]="!isVideo">
+    <div class="youtube-player-text pause-bar" [class.playing]="playing" [class.no-video]="!isVideo" [class.showTitle1]="showTitle1">
       <div *ngIf="!playing" style="margin:10px">Weiterfahren auf<br/>&nbsp;
         <div *ngFor="let link of allLinks" style="display: table-cell;margin-left:10px;margin-top:30px">
-          <a class="mat-fab link-button link" [class.showTitle1]="showTitle1" matRipple [routerLink]="link.route" style="float:left;margin:0 10px;"><img class="link" [class.showTitle1]="showTitle1" [src]="link.image"></a>
+          <a class="mat-fab link-button link" [class.showTitle1]="showTitle1" [routerLink]="link.route" style="float:left;margin:0 10px;"
+            (mouseover)="onLinkMouseOver(link.nr)" (mouseout)="onLinkMouseOut(link.nr)"><img class="link" [class.showTitle1]="showTitle1" [src]="link.image"></a>
           <span *ngIf="link!.title">{{link!.title}}</span>
           <span *ngIf="link!.subtitle"><br/>{{link!.subtitle}}</span>
         </div>
