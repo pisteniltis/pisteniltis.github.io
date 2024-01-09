@@ -1,6 +1,6 @@
 <img src="assets/images/iltis.png" class="titleIcon">
 <span *ngIf="showTitle1" class="title1">PistenIltis</span>
-<span class="title2" [class.showTitle1]="showTitle1">virtuelle Skigebietserkundung</span>
+<span class="title2" [class.showTitle1]="showTitle1">virtuelle Skigebietserkundung {{randomDest}}</span>
 <a href="https://www.turracherhoehe.at"><img src="assets/turrach/images/logo.svg" style="right:5%;bottom:92%;width:16%;position:absolute;"></a>
 <div #componentContainer class="component-container">
   <div #mapContainer class="map-container" [class.no-video]="!isVideo" [class.fullscreen]="isFullscreen" [class.portrait]="portrait" [class.landscape]="!portrait">
@@ -97,7 +97,7 @@
     </mat-toolbar>
     <div class="youtube-player-text pause-bar" [class.playing]="playing" [class.no-video]="!isVideo" [class.showTitle1]="showTitle1">
       <div *ngIf="!playing" style="margin:10px">Weiterfahren auf<br/>&nbsp;
-        <div *ngFor="let link of allLinks" style="display: table-cell;margin-left:10px;margin-top:30px">
+        <div *ngFor="let link of getAllLinks()" style="display: table-cell;margin-left:10px;margin-top:30px">
           <a class="mat-fab link-button link" [class.showTitle1]="showTitle1" [routerLink]="link.route" style="float:left;margin:0 10px;"
             (mouseover)="onLinkMouseOver(link.nr)" (mouseout)="onLinkMouseOut(link.nr)"><img class="link" [class.showTitle1]="showTitle1" [src]="link.image"></a>
           <span *ngIf="link!.title">{{link!.title}}</span>

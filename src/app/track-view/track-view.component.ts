@@ -5,7 +5,7 @@ import { MatSlider } from '@angular/material/slider';
 import { ActivatedRoute, Router } from '@angular/router';
 import { YouTubePlayer } from '@angular/youtube-player';
 import { interval } from 'rxjs';
-import { Track, TrackService, Navigation, Link } from '../track.service';
+import { Track, TrackService, Navigation, Link, Coords } from '../track.service';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { DOCUMENT } from '@angular/common';
 
@@ -46,7 +46,7 @@ export class TrackViewComponent implements AfterViewInit, OnInit  {
   @ViewChild("eleSlider") eleSlider!: MatSlider;
 
   // YouTube Controls
-  @ViewChild("volumeSlider") volumeSlider!: MatSlider;
+  @ViewChild("volumeSlider") volumeSlider?: MatSlider;
   @ViewChild("positionSlider") positionSlider!: MatSlider;
 
   public Math = Math;
@@ -85,6 +85,7 @@ export class TrackViewComponent implements AfterViewInit, OnInit  {
     ]
   };
   planMapType?: google.maps.ImageMapType;
+  plan = false;
 
   currentTrack?: Track;
   showAsTrack?: Track;
@@ -93,6 +94,7 @@ export class TrackViewComponent implements AfterViewInit, OnInit  {
   currentTime = 0;
   updatePosition = true;
   currentVideo?: string;
+  currentCoords?: Coords;
 
   autoMode = true;
   videoMode?: VideoMode;
@@ -137,9 +139,9 @@ export class TrackViewComponent implements AfterViewInit, OnInit  {
         this.videoMode = mode;
         if (this.youtubePlayer && this.isVideo) this.currentVideo = this.youtubePlayer.videoId = this.videoMode == VideoMode._360 ? this.currentTrack.video : this.videoMode == VideoMode.back ? this.currentTrack.videoBack : this.currentTrack.video2D;
         if (this.youtubePlayer2 && this.isVideo && this.videoMode == VideoMode.pip) this.youtubePlayer2.videoId = this.currentTrack.videoBack;
-        const links = (this.getAllLinks(this.currentTime + 10) || []).map(l => l.nr).concat([track.nr]);
+        const links = (this.getAllLinksFrom(this.currentTime + 10) || []).map(l => l.nr).concat([track.nr]);
         this.randomDest = links[Math.random() * links.length | 0];
-        //console.log("randomDest " + this.randomDest + " " + JSON.stringify(links));
+        console.log("currentVideo " + this.currentVideo + " randomDest " + this.randomDest + " " + JSON.stringify(links));
       }
       if (this.youtubePlayer && this.isVideo) 
       {
@@ -151,6 +153,7 @@ export class TrackViewComponent implements AfterViewInit, OnInit  {
     })
 
     interval(250).subscribe(() => {
+      //if (!this.currentTime) return;
       if (this.isVideo)
       {
         if (this.youtubePlayer.getPlayerState() == YT.PlayerState.PLAYING) 
@@ -176,6 +179,7 @@ export class TrackViewComponent implements AfterViewInit, OnInit  {
 
   public changeMapType(plan: boolean)
   {
+    this.plan = plan;
     const options = plan ? this.trackService.planOptions! : this.trackService.mapOptions!;
     if (plan && !this.planMapType) 
     {
@@ -223,10 +227,7 @@ export class TrackViewComponent implements AfterViewInit, OnInit  {
           google.maps.event.addListener(track.polyline, "mouseout", () => {this.setWeight(track, track.nr == this.currentTrack?.nr ? WEIGHT_CURRENT : WEIGHT);});
           google.maps.event.addListener(track.polyline, "click", (data:any) => {
             console.log(JSON.stringify(data.latLng));
-            this.router.navigate(this.getRoute(track.navigate || track.nr, 
-              plan ?
-                this.trackService.getClosestCoords(data.latLng, track.planCoordsTrackOnly)?.timeDiff :
-                this.trackService.convertTimeDiffFromRT(track.navigate ? this.trackService.tracksById[track.navigate] : track, this.trackService.getClosestCoords(data.latLng, track.coordsTrackOnly)?.timeDiff!)));
+            this.router.navigate(this.getRouteLatLng(track.navigate || track.nr, data.latLng, plan));
           });
         }
       }
@@ -301,7 +302,7 @@ export class TrackViewComponent implements AfterViewInit, OnInit  {
       this.navigateToRandomLink();
     }
     this.syncPlayer2();
-    this.volumeSlider.value = this.youtubePlayer.isMuted() ? 0 : this.youtubePlayer.getVolume();
+    if (this.volumeSlider) this.volumeSlider.value = this.youtubePlayer.isMuted() ? 0 : this.youtubePlayer.getVolume();
     this.positionSlider.max = this.youtubePlayer.getDuration() - 2;
   }
 
@@ -323,33 +324,33 @@ export class TrackViewComponent implements AfterViewInit, OnInit  {
     this.currentTime = time;
     this.currentNavigation = this.trackService.getNavigationByTimeDiff(this.currentTrack!, time);
     this.showAsTrack = this.currentNavigation?.showAs ? this.trackService.tracksById[this.currentNavigation!.showAs!] : this.currentTrack;
-    //console.log(time + " " + JSON.stringify(coords) + " " + JSON.stringify(this.currentNavigation));
-    var coords = this.trackService.getCoordsByTimeDiff(this.currentTrack!, time);
-    if (coords?.ele && this.eleSlider) this.eleSlider.value = Math.trunc(coords.ele);
-    if (this.googleMap.googleMap?.getMapTypeId() == "plan") coords = this.trackService.getCoordsByCoordsAndTimeDiff(time, this.currentTrack!.planCoords);
-    if (coords) 
+    this.currentCoords = this.trackService.getCoordsByTimeDiff(this.currentTrack!, time);
+    //console.log(time + " " + JSON.stringify(this.currentCoords) + " " + JSON.stringify(this.currentNavigation));
+    if (this.currentCoords?.ele && this.eleSlider) this.eleSlider.value = Math.trunc(this.currentCoords.ele);
+    if (this.plan) this.currentCoords = this.trackService.getCoordsByCoordsAndTimeDiff(time, this.currentTrack!.planCoords);
+    if (this.currentCoords) 
     {
-      this.positionMarker?.setPosition(coords);
-      this.googleMap.googleMap?.setCenter(coords);
+      this.positionMarker?.setPosition(this.currentCoords);
+      this.googleMap.googleMap?.setCenter(this.currentCoords);
     }
     if (this.positionSlider && this.updatePosition) this.positionSlider.value = time;
-    if (this.autoMode) this.getCurrentLinks("none");
     this.currentLinksLeft = this.getCurrentLinks("left").reverse();
     this.currentLinksRight = this.getCurrentLinks("right");
-    this.allLinks = this.getAllLinks();
+    this.allLinks = undefined;
   }
 
-  private getLinkItems(links: Link[], time: number)
+  private getLinkItems(links: Link[])
   {
     return links.map(link => { 
       const t = this.trackService.tracksById[link.showAs || link.nr];
       return {
         nr: link.nr,
-        route: this.getRoute(link.nr, link.offset == null ? undefined : (link.moving ? time + link.offset! : link.offset)),
+        route: this.getRouteLatLng(link.nr, this.currentCoords, this.plan),
         image: t.image,
         position: link.position,
         title: t.title,
-        subtitle: t.subtitle
+        subtitle: t.subtitle,
+        disabled: t.disabled
       };
     });
   }
@@ -357,14 +358,30 @@ export class TrackViewComponent implements AfterViewInit, OnInit  {
   private getRoute(nr: number | string, time?: number, videoMode?: VideoMode)
   {
     const params = {} as any;
-    if (time != null) params.t = time;
+    if (time) params.t = time;
+    params.m = videoMode || this.route.snapshot.params["m"] || this.videoMode;
+    return (['/' + nr] as any[]).concat(params.size == 0 ? [] : [params]);
+  }
+
+  private getRouteLatLng(nr: number | string, latLng: google.maps.LatLng | google.maps.LatLngLiteral | undefined, plan: boolean, videoMode?: VideoMode)
+  {
+    const params = {} as any;
+    if (latLng)
+    {
+      const track = this.trackService.tracksById[nr];
+      if (plan)
+        params.t = this.trackService.getClosestCoords(latLng, track.planCoordsTrackOnly)?.timeDiff || 0;
+      else
+        params.t = this.trackService.convertTimeDiffFromRT(track.navigate ? this.trackService.tracksById[track.navigate] : track, 
+          this.trackService.getClosestCoords(latLng, track.coordsTrackOnly)?.timeDiff!) || 0;
+    }
     params.m = videoMode || this.route.snapshot.params["m"] || this.videoMode;
     return (['/' + nr] as any[]).concat(params.size == 0 ? [] : [params]);
   }
 
   public getCurrentLinks(position?: string)
   {
-   return this.getLinkItems((this.currentNavigation?.links||[]).filter(link => position == null ? link.position != "none" : link.position == position), this.currentTime!).filter(link => {
+   return this.getLinkItems((this.currentNavigation?.links||[]).filter(link => position == null || link.position == position)).filter(link => {
      if (this.autoMode && link.nr == this.randomDest) 
      {
        this.randomDest = undefined;
@@ -376,16 +393,23 @@ export class TrackViewComponent implements AfterViewInit, OnInit  {
 
   public navigateToRandomLink()
   {
+    console.log("navigateToRandomLink");
     const links = this.getCurrentLinks();
     if (links) this.router.navigate(links[Math.random() * links.length | 0].route);
   }
 
-  public getAllLinks(start?: number)
+  public getAllLinks()
+  {
+    if (!this.allLinks) this.allLinks = this.getAllLinksFrom(this.currentTime);
+    return this.allLinks;
+  }
+
+  public getAllLinksFrom(start?: number)
   {
     const keys: {[key: string | number]: boolean} = {};
     return this.currentTrack?.navigation?.
       filter(n => start == null || n.nextTimeDiff == null || n.nextTimeDiff >= start).
-      flatMap(n => this.getLinkItems((n.links||[]).filter(l => {if (keys[l.nr]) return false; keys[l.nr] = true; return true;}).filter(l => l).map(l => l!), n.timeDiff)).map(l => l!);
+      flatMap(n => this.getLinkItems(n.links || []).filter(l => !l.disabled));
   }
 
   public onLinkMouseOver(id: string | number)
@@ -445,26 +469,26 @@ export class TrackViewComponent implements AfterViewInit, OnInit  {
 
   public onChangeVolume()
   {
-    if (this.volumeSlider.value == 0)
+    if (this.volumeSlider!.value == 0)
       this.youtubePlayer.mute();
     else
     {
-      this.youtubePlayer.setVolume(this.volumeSlider.value);
+      this.youtubePlayer.setVolume(this.volumeSlider!.value);
       this.youtubePlayer.unMute();
     }
   }
 
   public onMuteButton()
   {
-    if (this.volumeSlider.value != 0)
+    if (this.volumeSlider!.value != 0)
     {
       this.youtubePlayer.mute();
-      this.volumeSlider.value = 0;
+      this.volumeSlider!.value = 0;
     }
     else
     {
       this.youtubePlayer.unMute();
-      this.volumeSlider.value = this.youtubePlayer.getVolume();
+      this.volumeSlider!.value = this.youtubePlayer.getVolume();
     }
   }
 

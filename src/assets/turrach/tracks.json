@@ -61,7 +61,7 @@
         { "timeDiff": 114 },
         { "timeDiff": 140, "links": [ { "nr": "fp", "offset": 95, "position": "left" } ] },
         { "timeDiff": 145 },
-        { "timeDiff": 175, "showAs": 1 , "links": [ { "nr": 1, "offset": 3, "moving": true, "position": "none" } ] },
+        { "timeDiff": 175, "showAs": 1 },
         { "timeDiff": 212, "showAs": 1, "links": [ { "nr": "kornock", "position": "right" }, { "nr": "maulwurf_o", "position": "left"} ] }
       ]
     },
@@ -655,7 +655,7 @@
         { "timeDiff": 4, "showAs": 26, "speedUp": 10}, 
         { "timeDiff": 8, "showAs": 26, "speedUp": 100}, 
         { "timeDiff": 10, "speedUp": 20},
-        { "timeDiff": 19, "links" : [ { "nr": 18, "position": "left" }, {  "nr": 26, "offset": 4, "position": "none" } ] }
+        { "timeDiff": 19, "links" : [ { "nr": 18, "position": "left" } ] }
       ]
     },
     {

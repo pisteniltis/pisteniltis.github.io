@@ -316,7 +316,7 @@ export class TrackService {
     return coords[coords.length - 1];
   }
 
-  public getClosestCoords(searchPos: google.maps.LatLngLiteral, coords?: Coords[])
+  public getClosestCoords(searchPos: google.maps.LatLngLiteral | google.maps.LatLng, coords?: Coords[])
   {
     let minDist, minCoords;
     if (coords)
