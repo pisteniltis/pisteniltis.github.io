@@ -27,6 +27,7 @@ export interface LinkItem {
   position: string;
   title: string;
   subtitle?: string;
+  disabled?: boolean;
 }
 
 @Component({
@@ -153,7 +154,6 @@ export class TrackViewComponent implements AfterViewInit, OnInit  {
     })
 
     interval(250).subscribe(() => {
-      //if (!this.currentTime) return;
       if (this.isVideo)
       {
         if (this.youtubePlayer.getPlayerState() == YT.PlayerState.PLAYING) 
@@ -227,13 +227,14 @@ export class TrackViewComponent implements AfterViewInit, OnInit  {
           google.maps.event.addListener(track.polyline, "mouseout", () => {this.setWeight(track, track.nr == this.currentTrack?.nr ? WEIGHT_CURRENT : WEIGHT);});
           google.maps.event.addListener(track.polyline, "click", (data:any) => {
             console.log(JSON.stringify(data.latLng));
-            this.router.navigate(this.getRouteLatLng(track.navigate || track.nr, data.latLng, plan));
+            this.router.navigate(this.getRouteLatLng(track.nr, data.latLng, plan));
           });
         }
       }
       if (track.labelMarker) track.labelMarker.setMap(null);
-      if (track.labelPosition) track.labelMarker = new google.maps.Marker({
-        position: track.labelPosition,
+      const labelPosition = plan ? track.planLabelPosition : track.labelPosition;
+      if (labelPosition) track.labelMarker = new google.maps.Marker({
+        position: labelPosition,
         icon: {url: track.image, scaledSize: new google.maps.Size(22, 22), anchor: new google.maps.Point(11, 11)},
         clickable: false,
         map: this.googleMap.googleMap!
@@ -339,7 +340,7 @@ export class TrackViewComponent implements AfterViewInit, OnInit  {
     this.allLinks = undefined;
   }
 
-  private getLinkItems(links: Link[])
+  private getLinkItems(links: Link[]): LinkItem[]
   {
     return links.map(link => { 
       const t = this.trackService.tracksById[link.showAs || link.nr];
@@ -366,17 +367,18 @@ export class TrackViewComponent implements AfterViewInit, OnInit  {
   private getRouteLatLng(nr: number | string, latLng: google.maps.LatLng | google.maps.LatLngLiteral | undefined, plan: boolean, videoMode?: VideoMode)
   {
     const params = {} as any;
+    const track = this.trackService.tracksById[nr];
     if (latLng)
     {
-      const track = this.trackService.tracksById[nr];
       if (plan)
-        params.t = this.trackService.getClosestCoords(latLng, track.planCoordsTrackOnly)?.timeDiff || 0;
+        params.t = this.trackService.getClosestCoords(latLng, track.planCoordsTrackOnly)?.timeDiff;
       else
         params.t = this.trackService.convertTimeDiffFromRT(track.navigate ? this.trackService.tracksById[track.navigate] : track, 
-          this.trackService.getClosestCoords(latLng, track.coordsTrackOnly)?.timeDiff!) || 0;
+          this.trackService.getClosestCoords(latLng, track.coordsTrackOnly)?.timeDiff!);
+      if (!params.t || params.t < 0) params.t = 0;
     }
     params.m = videoMode || this.route.snapshot.params["m"] || this.videoMode;
-    return (['/' + nr] as any[]).concat(params.size == 0 ? [] : [params]);
+    return (['/' + (track.navigate || nr)] as any[]).concat(params.size == 0 ? [] : [params]);
   }
 
   public getCurrentLinks(position?: string)
@@ -400,16 +402,16 @@ export class TrackViewComponent implements AfterViewInit, OnInit  {
 
   public getAllLinks()
   {
-    if (!this.allLinks) this.allLinks = this.getAllLinksFrom(this.currentTime);
+    if (!this.allLinks) this.allLinks = this.getAllLinksFrom();
     return this.allLinks;
   }
 
   public getAllLinksFrom(start?: number)
   {
-    const keys: {[key: string | number]: boolean} = {};
+    const keys = new Set<string | number>();
     return this.currentTrack?.navigation?.
       filter(n => start == null || n.nextTimeDiff == null || n.nextTimeDiff >= start).
-      flatMap(n => this.getLinkItems(n.links || []).filter(l => !l.disabled));
+      flatMap(n => this.getLinkItems(n.links || [])).filter(l => !l.disabled).filter(l => keys.size != keys.add(l.nr).size)
   }
 
   public onLinkMouseOver(id: string | number)

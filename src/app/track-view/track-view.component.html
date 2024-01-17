@@ -1,6 +1,6 @@
 <img src="assets/images/iltis.png" class="titleIcon">
 <span *ngIf="showTitle1" class="title1">PistenIltis</span>
-<span class="title2" [class.showTitle1]="showTitle1">virtuelle Skigebietserkundung {{randomDest}}</span>
+<span class="title2" [class.showTitle1]="showTitle1">virtuelle Skigebietserkundung</span>
 <a href="https://www.turracherhoehe.at"><img src="assets/turrach/images/logo.svg" style="right:5%;bottom:92%;width:16%;position:absolute;"></a>
 <div #componentContainer class="component-container">
   <div #mapContainer class="map-container" [class.no-video]="!isVideo" [class.fullscreen]="isFullscreen" [class.portrait]="portrait" [class.landscape]="!portrait">
