@@ -10,8 +10,8 @@
       [options]="mapOptions">
     </google-map>
     <button *ngIf="trackService.planOptions" style="top:10px;left:10px;position: absolute;" mat-raised-button>
-      <mat-icon matTooltip="Landkarte">satellite_alt</mat-icon>
-      <mat-slide-toggle (change)="changeMapType($event.checked)"></mat-slide-toggle>
+      <mat-icon matTooltip="Satellit">satellite_alt</mat-icon>
+      <mat-slide-toggle [(ngModel)]="plan" (change)="setupMapType()"></mat-slide-toggle>
       <mat-icon matTooltip="Pistenplan">map</mat-icon>
     </button>
     <!--<img *ngIf="googleMap?.googleMap?.getMapTypeId()=='plan'" src="assets/turrach/images/pistenplan.png" style="top:60px;left:-145px;position: absolute;opacity: 0.4;pointer-events:none;">-->
@@ -75,7 +75,7 @@
         </mat-select>
       </button>
       <button mat-raised-button matTooltip="automatisch auf zufälliger Piste weiterfahren">
-        <mat-slide-toggle [(ngModel)]="autoMode" ></mat-slide-toggle>
+        <mat-slide-toggle [(ngModel)]="autoMode"></mat-slide-toggle>
         <mat-icon>shuffle</mat-icon>
       </button>
       <button mat-raised-button>

@@ -86,7 +86,7 @@ export class TrackViewComponent implements AfterViewInit, OnInit  {
     ]
   };
   planMapType?: google.maps.ImageMapType;
-  plan = false;
+  plan = true;
 
   currentTrack?: Track;
   showAsTrack?: Track;
@@ -120,7 +120,7 @@ export class TrackViewComponent implements AfterViewInit, OnInit  {
 
   ngAfterViewInit(): void {
 
-    this.changeMapType(false);
+    this.setupMapType();
 
     google.maps.event.addListener(this.googleMap.googleMap!, "click", (data:any) => {
       console.log(JSON.stringify(data.latLng));
@@ -134,9 +134,13 @@ export class TrackViewComponent implements AfterViewInit, OnInit  {
       //console.log("starting" + track.nr + "@" + this.currentTime);
       if (this.currentTrack?.nr != track.nr || this.videoMode != mode)
       {
+        let highlightTrack = this.currentTrack?.highlight ? this.trackService.tracksById[this.currentTrack?.highlight] : undefined;
         if (this.currentTrack?.polyline) this.setWeight(this.currentTrack, WEIGHT);
+        if (highlightTrack?.polyline) this.setWeight(highlightTrack, WEIGHT);
         this.currentTrack = track;
+        highlightTrack = this.currentTrack?.highlight ? this.trackService.tracksById[this.currentTrack?.highlight] : undefined;
         if (this.currentTrack.polyline) this.setWeight(this.currentTrack, WEIGHT_CURRENT);
+        if (highlightTrack?.polyline) this.setWeight(highlightTrack, WEIGHT_CURRENT);
         this.videoMode = mode;
         if (this.youtubePlayer && this.isVideo) this.currentVideo = this.youtubePlayer.videoId = this.videoMode == VideoMode._360 ? this.currentTrack.video : this.videoMode == VideoMode.back ? this.currentTrack.videoBack : this.currentTrack.video2D;
         if (this.youtubePlayer2 && this.isVideo && this.videoMode == VideoMode.pip) this.youtubePlayer2.videoId = this.currentTrack.videoBack;
@@ -177,11 +181,10 @@ export class TrackViewComponent implements AfterViewInit, OnInit  {
     })
   }
 
-  public changeMapType(plan: boolean)
+  public setupMapType()
   {
-    this.plan = plan;
-    const options = plan ? this.trackService.planOptions! : this.trackService.mapOptions!;
-    if (plan && !this.planMapType) 
+    const options = this.plan ? this.trackService.planOptions! : this.trackService.mapOptions!;
+    if (this.plan && !this.planMapType) 
     {
       this.planMapType = new google.maps.ImageMapType({
         name: "plan",
@@ -203,14 +206,14 @@ export class TrackViewComponent implements AfterViewInit, OnInit  {
     this.mapOptions.minZoom = options.minZoom,
     this.mapOptions.restriction = options.restriction;
     this.googleMap.googleMap?.setOptions(this.mapOptions);
-    this.googleMap.googleMap?.setMapTypeId(plan ? "plan" : "hybrid");
+    this.googleMap.googleMap?.setMapTypeId(this.plan ? "plan" : "hybrid");
     this.googleMap.googleMap?.setZoom(options.zoom);
     this.googleMap.googleMap?.setCenter(options.center!)
 
     for (var i = this.trackService.tracks.length -1; i >= 0; i--)
     {
       const track = this.trackService.tracks[i];
-      const coords = plan ? track.planCoordsTrackOnly : track.coordsTrackOnly;
+      const coords = this.plan ? track.planCoordsTrackOnly : track.coordsTrackOnly;
       if (coords && track.color)
       {
         if (track.polyline) track.polyline.setMap(null);
@@ -224,15 +227,15 @@ export class TrackViewComponent implements AfterViewInit, OnInit  {
         this.setWeight(track, WEIGHT);
         if (!track.disabled) {
           google.maps.event.addListener(track.polyline, "mouseover", () => {this.setWeight(track, WEIGHT_SELECTED);});
-          google.maps.event.addListener(track.polyline, "mouseout", () => {this.setWeight(track, track.nr == this.currentTrack?.nr ? WEIGHT_CURRENT : WEIGHT);});
+          google.maps.event.addListener(track.polyline, "mouseout", () => {this.setWeight(track, (track.nr == this.currentTrack?.nr || track.nr == this.currentTrack?.highlight) ? WEIGHT_CURRENT : WEIGHT);});
           google.maps.event.addListener(track.polyline, "click", (data:any) => {
             console.log(JSON.stringify(data.latLng));
-            this.router.navigate(this.getRouteLatLng(track.nr, data.latLng, plan));
+            this.router.navigate(this.getRouteLatLng(track.nr, data.latLng, this.plan));
           });
         }
       }
       if (track.labelMarker) track.labelMarker.setMap(null);
-      const labelPosition = plan ? track.planLabelPosition : track.labelPosition;
+      const labelPosition = this.plan ? track.planLabelPosition : track.labelPosition;
       if (labelPosition) track.labelMarker = new google.maps.Marker({
         position: labelPosition,
         icon: {url: track.image, scaledSize: new google.maps.Size(22, 22), anchor: new google.maps.Point(11, 11)},
@@ -410,7 +413,7 @@ export class TrackViewComponent implements AfterViewInit, OnInit  {
   {
     const keys = new Set<string | number>();
     return this.currentTrack?.navigation?.
-      filter(n => start == null || n.nextTimeDiff == null || n.nextTimeDiff >= start).
+      filter(n => start == null || n.timeDiff >= start).
       flatMap(n => this.getLinkItems(n.links || [])).filter(l => !l.disabled).filter(l => keys.size != keys.add(l.nr).size)
   }
 
@@ -423,7 +426,7 @@ export class TrackViewComponent implements AfterViewInit, OnInit  {
   public onLinkMouseOut(id: string | number)
   {
     const track = this.trackService.tracksById[id];
-    this.setWeight(track, track.nr == this.currentTrack?.nr ? WEIGHT_CURRENT : WEIGHT);
+    this.setWeight(track, (track.nr == this.currentTrack?.nr || track.nr == this.currentTrack?.highlight) ? WEIGHT_CURRENT : WEIGHT);
   }
 
   public get isFullscreen()

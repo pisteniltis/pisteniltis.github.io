@@ -19,6 +19,10 @@ export interface Coords {
   timeDiff?: number
   timeDiffOld?: number
 }
+export interface PlanCoords extends Coords {
+  realLat?: number;
+  realLng?: number;
+}
 export interface Link {
   nr: number | string;
   offset?: number;
@@ -49,10 +53,11 @@ export interface Track {
   coordsFile?: string;
   coords?: Coords[];
   coordsTrackOnly?: Coords[];
-  planCoords?: Coords[];
-  planCoordsTrackOnly?: Coords[];
+  planCoords?: PlanCoords[];
+  planCoordsTrackOnly?: PlanCoords[];
   navigation? : Navigation[],
   labelPosition?: {lat: number, lng: number};
+  planLabelPosition?: {lat: number, lng: number};
   polyline?: google.maps.Polyline;
   labelMarker?: google.maps.Marker;
   start?: number;
@@ -61,6 +66,7 @@ export interface Track {
   navigate?: number | string;
   disabled?: boolean;
   minEle?: number; maxEle?: number;
+  highlight?: number | string;
 }
 export interface MapOptions {
   zoom: number;
@@ -89,6 +95,7 @@ export class TrackService {
     var minLat = null as number | null; var maxLat = null as number | null;
     var minLng = null as number | null; var maxLng = null as number | null;
     var minEle = null as number | null; var maxEle = null as number | null;
+    //const planCoordsOut: any = {};
     for (const dt of tracksData.tracks) 
     {
       const t: Track = dt;
@@ -161,7 +168,20 @@ export class TrackService {
       }
       if(t.planCoords && t.planCoords.length > 0)
       {
+        //for (const j in t.planCoords)
+          /*if (t.planCoords[j].timeDiff)
+          {
+            const c = this.getCoordsByTimeDiff(t, t.planCoords[j].timeDiff!);
+            t.planCoords[j].realLat = c?.lat;
+            t.planCoords[j].realLng = c?.lng;
+          }*/
+          /*if (t.planCoords[j].realLat)
+          {
+            t.planCoords[j].timeDiff = this.getClosestCoords({lat: t.planCoords[j].realLat!, lng: t.planCoords[j].realLng!}, t.coords)!.timeDiff;
+          }*/
+        //planCoordsOut[t.nr] = Object.assign([], t.planCoords);
         if (t.planCoords[0].timeDiff == null) t.planCoords[0].timeDiff = 0;
+        if (t.planCoords[t.planCoords.length - 1].timeDiff == null) t.planCoords[t.planCoords.length - 1].timeDiff = this.convertTimeDiffFromRT(t, t.coords![t.coords!.length - 1].timeDiff!);
         this.interpolateMissingData(t.planCoords, "timeDiff");
         t.planCoords = this.bspline(t.planCoords)!;
       }
@@ -169,6 +189,7 @@ export class TrackService {
       if (tNavigate.planCoords)
         for (const j in tNavigate.planCoords)
           if ((t.start == null || t.start < tNavigate.planCoords[+j+1]?.timeDiff!) && (t.end == null || t.end >= tNavigate.planCoords[j].timeDiff!)) 
+          //if ((t.start == null || t.start < tNavigate.planCoords[+j+1]?.timeDiff!) && (t.end == null || t.end >= tNavigate.planCoords[+j-1]?.timeDiff!)) 
             t.planCoordsTrackOnly.push(tNavigate.planCoords[j]);
       this.tracks.push(t);
       this.tracksById[t.nr] = t;    
@@ -322,7 +343,7 @@ export class TrackService {
     if (coords)
       for (const c of coords)
       {
-          const dist = google.maps.geometry.spherical.computeDistanceBetween(c, searchPos)
+          const dist = google.maps.geometry?.spherical.computeDistanceBetween(c, searchPos)
           if (minDist == null || minDist > dist)
           {
             minDist = dist;

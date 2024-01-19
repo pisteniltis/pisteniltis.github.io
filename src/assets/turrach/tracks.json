@@ -36,7 +36,9 @@
         { "timeDiff": 86 },
         { "timeDiff": 94, "links": [ { "nr": 2, "position": "left" } ] },
         { "timeDiff": 99 },
-        { "timeDiff": 210, "links": [ { "nr": "kornock", "position": "right" }, { "nr": "maulwurf_o", "position": "left"} ] }
+        { "timeDiff": 140, "links": [ { "nr": "huettenexpress", "position": "right" } ] },
+        { "timeDiff": 145 },
+        { "timeDiff": 210, "links": [ { "nr": "kornock", "position": "right" }, { "nr": "englaender", "position": "right" }, { "nr": "maulwurf_o", "position": "left"} ] }
       ]
     },
     {
@@ -114,7 +116,7 @@
         { "timeDiff": 40, "showAs": 17},
         { "timeDiff": 48, "links": [ { "nr": 17, "position": "left" } ] },
         { "timeDiff": 53 },
-        { "timeDiff": 147, "showAs": 1},
+        { "timeDiff": 149, "showAs": 1},
         { "timeDiff": 150, "showAs": 1, "links": [ { "nr": "kornock", "position": "right" }, { "nr": "maulwurf_o", "position": "left"} ] }
       ]
     },
@@ -151,7 +153,9 @@
         { "timeDiff": 4, "showAs": 7 },
         { "timeDiff": 10, "links": [ { "nr": 7, "position": "left"} ] },
         { "timeDiff": 15 },
-        { "timeDiff": 55, "showAs": 1, "links": [ { "nr": "uebungswiese", "position": "left" }, { "nr": "seetaxi_o", "position": "left"} ] }
+        { "timeDiff": 40, "links": [ { "nr": "nockyblitz", "position": "right"} ] },
+        { "timeDiff": 45 },
+        { "timeDiff": 55, "links": [ { "nr": "uebungswiese", "position": "left" }, { "nr": "seetaxi_o", "position": "right"} ] }
       ]
     },
     {
@@ -172,7 +176,7 @@
         { "timeDiff": 3, "links": [ { "nr": 5, "position": "right" } , { "nr": 6, "position": "right"} ] },
         { "timeDiff": 4, "links": [ { "nr": 6, "position": "right"} ] },
         { "timeDiff": 7 },
-        { "timeDiff": 39, "showAs": 1, "links": [ { "nr": "uebungswiese", "position": "right" }, { "nr": "seetaxi_o", "position": "left"} ] }
+        { "timeDiff": 39, "links": [ { "nr": "uebungswiese", "position": "right" }, { "nr": "seetaxi_o", "position": "left"} ] }
       ]
     },
     {
@@ -183,7 +187,11 @@
       "disabled": true,
       "color": "red",
       "labelPosition": {"lat": 46.9175237976014614105224609375, "lng": 13.8652827031910419464111328125},
-      "planLabelPosition": {"lat":-0.0031707858118492343,"lng":0.0065609789256715345}
+      "planLabelPosition": {"lat":-0.0031707858118492343,"lng":0.0065609789256715345},
+      "navigation": [
+        { "timeDiff": 0, "speedUp": 10 },
+        { "timeDiff": 6, "links": [ { "nr": 1, "position": "right" } ] }
+      ]
     },
     {
       "nr": 10, 
@@ -219,12 +227,20 @@
     {
       "nr": 12,
       "title": "Panorama",
-      "subtitle": "leider kein Video",
       "image": "assets/turrach/images/12.png",
-      "disabled": true,
+      "video": "XGt_0A09hx8",
+      "video2D": "7EBucjlGX3Y",
+      "videoBack": "jmMUjsl3tqE",
       "color": "red",
       "labelPosition": { "lat":46.91548059361249,"lng":13.869230510750578 },
-      "planLabelPosition": {"lat":-0.002842302020450834,"lng":0.005989372730255127}
+      "planLabelPosition": {"lat":-0.002842302020450834,"lng":0.005989372730255127},
+      "navigation": [
+        { "timeDiff": 0, "links": [ { "nr": 9, "position": "left" } ] },
+        { "timeDiff": 5},
+        { "timeDiff": 87, "links": [ { "nr": 13, "position": "left" } ] },
+        { "timeDiff": 92},
+        { "timeDiff": 128, "links": [ { "nr": "panorama", "position": "right" } ] }
+      ]
     },
     {
       "nr": 13,
@@ -234,32 +250,29 @@
       "disabled": true,
       "color": "red",
       "labelPosition": {"lat":46.917087476705035,"lng":13.870623811448034},
-      "planLabelPosition": {"lat":-0.0031962590870976285,"lng":0.005786886309544492}
+      "planLabelPosition": {"lat":-0.0031962590870976285,"lng":0.005786886309544492},
+      "navigation": [
+        { "timeDiff": 0, "speedUp": 5 },
+        { "timeDiff": 9, "links": [ { "nr": 6, "position": "right" } ] }
+      ]
     },
     {
       "nr": 14, 
       "title": "Schafalm", 
       "image": "assets/turrach/images/14.png",
-      "rotation": -38,
-      "video": "dn8T72TRp9k",
-      "video2D": "szde4zjtgok",
-      "videoBack": "BPCjanOocH0",
+      "video": "sy5WnySvrC8",
+      "video2D": "80foRKScknE",
+      "videoBack": "U-jrPA1CPAQ",
       "color": "red",
-      "time": "2020-03-10T09:48:38.000Z",
       "labelPosition": { "lat":46.924883695319295,"lng":13.851247373968363 },
       "planLabelPosition": {"lat":-0.004372000856495339,"lng":0.008701086044311523},
       "navigation": [
-        { "timeDiff": 0, "showAs": 1 },
-        { "timeDiff": 12, "showAs": 1, "links": [ { "nr": 10, "position": "right" } ] },
-        { "timeDiff": 17, "showAs": 1 },
-        { "timeDiff": 51, "links": [ { "nr": 1, "position": "right" } ] },
-        { "timeDiff": 57 },
-        { "timeDiff": 77, "links": [ { "nr": 15, "position": "right" } ] },
-        { "timeDiff": 81 },
-        { "timeDiff": 149, "links": [ { "nr": "fs", "position": "right" } ] },
-        { "timeDiff": 153, "showAs": 17, "links": [ { "nr": "fs", "position": "right" } ] },
-        { "timeDiff": 155, "showAs": 17 },
-        { "timeDiff": 180, "showAs": 17, "links": [ { "nr": "schafalm", "position": "right" } ] }
+        { "timeDiff": 45, "links": [ { "nr": 15, "position": "right" } ] },
+        { "timeDiff": 50 },
+        { "timeDiff": 122, "links": [ { "nr": "fs", "position": "right" } ] },
+        { "timeDiff": 125, "showAs": 17, "links": [ { "nr": "fs", "position": "right" } ] },
+        { "timeDiff": 127, "showAs": 17 },
+        { "timeDiff": 157, "showAs": 17, "links": [ { "nr": "schafalm", "position": "right" } ] }
       ]
     },
     {
@@ -280,8 +293,8 @@
         { "timeDiff": 46, "showAs": 1 },
         { "timeDiff": 100, "showAs": 14, "links": [ { "nr": 1, "position": "right" } ] },
         { "timeDiff": 105, "showAs": 14 },
-        { "timeDiff": 135, "links": [ { "nr": 14, "position": "left" } ] },
-        { "timeDiff": 140 },
+        { "timeDiff": 130, "links": [ { "nr": 14, "position": "left" } ] },
+        { "timeDiff": 138 },
         { "timeDiff": 205, "showAs": 14 },
         { "timeDiff": 242, "showAs": "fs", "links": [ { "nr": 17, "position": "left" } ] },
         { "timeDiff": 247, "showAs": "fs" },
@@ -621,6 +634,7 @@
       "video2D": "r2GgDTd7mGs",
       "videoBack": "tRYUpM_eI3c",
       "color": "yellow",
+      "highlight": "fs2",
       "time": "2020-03-10T10:11:56.000Z",
       "labelPosition": { "lat":46.92421599291265,"lng":13.856236785650253 },
       "planLabelPosition": {"lat":-0.0035405160638668494,"lng":0.008046627044677734},
@@ -639,33 +653,35 @@
       "navigate": "fs",
       "color": "yellow",
       "labelPosition": { "lat":46.9302212074399, "lng":13.850939841940999 },
-      "planLabelPosition": {"lat":-0.0035405160638668494,"lng":0.008046627044677734}
+      "planLabelPosition": {"lat":-0.006000101740916066,"lng":0.00893712043762207}
     },
     {
       "nr": "fp", 
       "title": "Funpark", 
       "image": "assets/images/funpark.png",
       "rotation": -34,
-      "video": "0CurndxZUIk",
-      "video2D": "AAIRnbnMu28",
-      "videoBack": "WPgBdeuO8IY",
+      "video": "5WZqx17uzf4",
+      "video2D": "LWP1Qrz_wx8",
+      "videoBack": "iroa5wkdYEo",
       "color": "orange",
-      "time": "2020-03-09T13:55:25.000Z",
+      "highlight": "fp2",
       "labelPosition": { "lat":46.92119222134352, "lng":13.858311893418431 },
       "planLabelPosition": {"lat":-0.0033380975058760034,"lng":0.007542443853401082},
       "navigation": [
-        { "timeDiff": 0 },
-        { "timeDiff": 66, "showAs": 2 },
-        { "timeDiff": 94, "showAs": "fp2", "links": [ { "nr": 2, "position": "right"} ] },
-        { "timeDiff": 98, "showAs": "fp2" },
-        { "timeDiff": 119, "showAs": "fp2", "speedUp": 4 },
-        { "timeDiff": 122, "showAs": "fp2" },
-        { "timeDiff": 194, "showAs": "fp2", "links": [ { "nr": 1, "position": "right"}]},
-        { "timeDiff": 200, "showAs": "fp2" },
-        { "timeDiff": 244, "showAs": "fp2", "speedUp": 10 },
-        { "timeDiff": 248, "showAs": "fp2" },
-        { "timeDiff": 273, "showAs": 1 },
-        { "timeDiff": 279, "showAs": 1, "links": [ { "nr": "kornock", "position": "right" }, { "nr": "maulwurf_o", "position": "left"} ] }
+        { "timeDiff": 0, "showAs": 1},
+        { "timeDiff": 28, "showAs": 1, "links": [ { "nr": 10, "position": "right" } ] },
+        { "timeDiff": 33, "showAs": 1},
+        { "timeDiff": 70, "showAs": 1, "links": [ { "nr": 14, "position": "left" } ] },
+        { "timeDiff": 75, "showAs": 1},
+        { "timeDiff": 97, "showAs": 1, "links": [ { "nr": "fs", "position": "left" }, { "nr": 3, "position": "left" } ] },
+        { "timeDiff": 100, "links": [ { "nr": "fs", "position": "left" }, { "nr": 3, "position": "left" }, { "nr": 1, "position": "right" } ] },
+        { "timeDiff": 103 },
+        { "timeDiff": 145, "showAs": 2 },
+        { "timeDiff": 160, "showAs": "fp2", "links": [ { "nr": 2, "position": "right"} ] },
+        { "timeDiff": 164, "showAs": "fp2" },
+        { "timeDiff": 249, "showAs": 4 },
+        { "timeDiff": 261, "showAs": 1 },
+        { "timeDiff": 267, "showAs": 1, "links": [ { "nr": "kornock", "position": "right" }, { "nr": "maulwurf_o", "position": "left"} ] }
       ]
     },
     {
@@ -861,21 +877,33 @@
       "title": "Nocky-Blitz",
       "image": "assets/images/schlepplift.png",
       "disabled": true,
-      "color": "green"
+      "color": "green",
+      "navigation": [
+        { "timeDiff": 0, "speedUp": 40 },
+        { "timeDiff": 5, "links": [ { "nr": 12, "position": "right" }, { "nr": 13, "position": "right" } ] }
+      ]
     },
     {
       "nr": "panorama",
       "title": "Panoramabahn",
-      "image": "assets/images/6er.png",
+      "image": "assets/images/sessel6.png",
       "disabled": true,
-      "color": "green"
+      "color": "green",
+      "navigation": [
+        { "timeDiff": 0, "speedUp": 40 },
+        { "timeDiff": 8, "links": [ { "nr": 9, "position": "right" }, { "nr": 12, "position": "left" } ] }
+      ]
     },
     {
       "nr": "huettenexpress",
       "title": "Hüttenexpress",
       "image": "assets/images/schlepplift.png",
       "disabled": true,
-      "color": "green"
+      "color": "green",
+      "navigation": [
+        { "timeDiff": 0, "speedUp": 40 },
+        { "timeDiff": 4, "links": [ { "nr": 9, "position": "left" }, { "nr": 12, "position": "right" } ] }
+      ]
     },
     {
       "nr": "hirschkogel",
