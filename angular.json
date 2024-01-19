@@ -21,7 +21,7 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "dist/ingmar-iltis-interactive",
-            "index": "src/index.html",
+            "index": "src/index.dev.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
@@ -56,7 +56,7 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              "index": "src/index.prod.html",
+              "index": "src/index.html",
               "outputHashing": "all"
             },
             "development": {
