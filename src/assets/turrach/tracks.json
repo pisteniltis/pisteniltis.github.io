@@ -436,7 +436,8 @@
         { "timeDiff": 104},
         { "timeDiff": 135, "speedUp": 54},
         { "timeDiff": 136},
-        { "timeDiff": 158, "speedUp": 34, "showAs": 35},
+        { "timeDiff": 154, "links": [ { "nr": 31, "position": "left"} ] },
+        { "timeDiff": 158, "speedUp": 34, "showAs": 35, "links": [ { "nr": 31, "position": "left"} ] },
         { "timeDiff": 159, "showAs": 35},
         { "timeDiff": 203, "showAs": 20 },
         { "timeDiff": 207, "showAs": 20, "links": [ { "nr": "turrach", "position": "right"} ] }
@@ -462,38 +463,38 @@
       "nr": 23, 
       "title": "Schwarzsee", 
       "image": "assets/turrach/images/23.png",
-      "rotation": -163,
-      "video": "qb_EZVNklm8",
-      "video2D": "7sYPTnnhSaM",
-      "videoBack": "J0TxkJXey1Q",
+      "video": "ImfxhTbrL9o",
+      "video2D": "DQ0mXgZpOlU",
+      "videoBack": "cd3a2IstDBY",
       "color": "red",
-      "time": "2020-03-08T13:20:52.000Z",
+      "time": "2023-03-16T09:03:52.500Z",
       "labelPosition": { "lat":46.92159262485802,"lng":13.887897497043014 },
       "planLabelPosition": {"lat":-0.003073811696053749,"lng":0.0025641918182373047},
       "navigation": [
-        { "timeDiff": 0, "links": [ { "nr": 25, "position": "right"} ] },
-        { "timeDiff": 10 },
-        { "timeDiff": 68, "links": [ { "nr": "23zuseitensprung", "position": "left", "showAs": "seitensprung" } ] },
-        { "timeDiff": 73 },
-        { "timeDiff": 137, "links": [ { "nr": "weitental", "position": "right"} ] }
+        { "timeDiff": 0, "links": [ { "nr": 25, "position": "left"}, { "nr": 24, "position": "right"} ] },
+        { "timeDiff": 12 },
+        { "timeDiff": 84, "links": [ { "nr": "23zuseitensprung", "position": "left", "showAs": "seitensprung" } ] },
+        { "timeDiff": 89 },
+        { "timeDiff": 133, "links": [ { "nr": "weitental", "position": "right"}, { "nr": 31, "position": "left" } ] }
       ]
     },
     {
       "nr": 24, 
       "title": "Weitental", 
       "image": "assets/turrach/images/24.png",
-      "rotation": 7,
-      "video": "dXLict3VP6E",
-      "video2D": "QamGm7zfvaY",
-      "videoBack": "gbSYOyZQj38",
+      "video": "mamEJRZSKSQ",
+      "video2D": "KstTA1cFvTs",
+      "videoBack": "Bms4QJfAEIg",
       "color": "red",
-      "time": "2020-03-08T13:33:51.000Z",
+      "time": "2023-03-16T08:05:49.500Z",
       "labelPosition": { "lat":46.92217307165265,"lng":13.894251985475421 },
       "planLabelPosition": { "lat":-0.0031833904343365736,"lng":0.0016522407531738281 },
       "navigation": [
-        { "timeDiff": 19, "links": [ { "nr": 25, "position": "left"}, { "nr": 23, "position": "left"} ] },
+        { "timeDiff": 0, "links": [ { "nr": 23, "position": "right"} ] },
+        { "timeDiff": 15 },
+        { "timeDiff": 19, "links": [ { "nr": 25, "position": "right"} ] },
         { "timeDiff": 24 },
-        { "timeDiff": 162, "links": [ { "nr": "weitental", "position": "left" } ] }
+        { "timeDiff": 178, "links": [ { "nr": "weitental", "position": "left" }, { "nr": 31, "position": "right" } ] }
       ]
     },
     {
@@ -545,12 +546,20 @@
     {
       "nr": 31,
       "title": "Skiweg zur Turrachbahn",
-      "subtitle": "leider kein Video",
       "image": "assets/turrach/images/31.png",
-      "disabled": true,
+      "video": "XCLrLdWX6Ps",
+      "video2D": "W7-01xNkBpc",
+      "videoBack": "jkTuj34prnk",
+      "time": "2023-03-16T08:09:32.399Z",
       "color": "blue",
       "labelPosition": {"lat":46.931409250589496,"lng":13.89496368875473},
-      "planLabelPosition": {"lat":-0.0051444770501210164,"lng":0.0010192394256591797}
+      "planLabelPosition": {"lat":-0.0051444770501210164,"lng":0.0010192394256591797},
+      "navigation": [
+        { "timeDiff": 208, "links": [ { "nr": 35, "position": "right" } ] },
+        { "timeDiff": 220 },
+        { "timeDiff": 257, "showAs": 20 },
+        { "timeDiff": 315, "links": [ { "nr": "turrach", "position": "right" } ] }
+      ]
     },
     {
       "nr": 32,
@@ -584,7 +593,9 @@
         { "timeDiff": 38, "links": [ { "nr": 20, "position": "left" } ] },
         { "timeDiff": 44 },
         { "timeDiff": 159, "showAs": 21 },
-        { "timeDiff": 190, "showAs": 35 },
+        { "timeDiff": 186, "links": [ { "nr": 31, "position": "left" } ] },
+        { "timeDiff": 190, "showAs": 35, "links": [ { "nr": 31, "position": "left" } ] },
+        { "timeDiff": 192, "showAs": 35 },
         { "timeDiff": 243, "showAs": 20 },
         { "timeDiff": 247, "showAs": 20, "links": [ { "nr": "turrach", "position": "right"} ] }
       ]
@@ -817,7 +828,7 @@
       "disabled": true,
       "navigation": [
         { "timeDiff": 0, "speedUp": 40 },
-        { "timeDiff": 11, "links": [ { "nr": 24, "position": "right"} ] }
+        { "timeDiff": 11, "links": [ { "nr": 23, "position": "right"}, { "nr": 24, "position": "right"}, { "nr": 25, "position": "right"} ] }
       ]
     },
     {
