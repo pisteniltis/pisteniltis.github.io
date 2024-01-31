@@ -144,7 +144,7 @@ export class TrackViewComponent implements AfterViewInit, OnInit  {
         this.videoMode = mode;
         if (this.youtubePlayer && this.isVideo) this.currentVideo = this.youtubePlayer.videoId = this.videoMode == VideoMode._360 ? this.currentTrack.video : this.videoMode == VideoMode.back ? this.currentTrack.videoBack : this.currentTrack.video2D;
         if (this.youtubePlayer2 && this.isVideo && this.videoMode == VideoMode.pip) this.youtubePlayer2.videoId = this.currentTrack.videoBack;
-        const links = (this.getAllLinksFrom(this.currentTime + 10) || []).map(l => l.nr).concat([track.nr]);
+        const links = (this.getAllLinksFrom(false, this.currentTime + 10) || []).map(l => l.nr).concat([track.nr]);
         this.randomDest = links[Math.random() * links.length | 0];
         console.log("currentVideo " + this.currentVideo + " randomDest " + this.randomDest + " " + JSON.stringify(links));
       }
@@ -343,13 +343,15 @@ export class TrackViewComponent implements AfterViewInit, OnInit  {
     this.allLinks = undefined;
   }
 
-  private getLinkItems(links: Link[]): LinkItem[]
+  private getLinkItems(links: Link[], keepPos: boolean): LinkItem[]
   {
     return links.map(link => { 
       const t = this.trackService.tracksById[link.showAs || link.nr];
       return {
         nr: link.nr,
-        route: this.getRouteLatLng(link.nr, this.currentCoords, this.plan),
+        route: keepPos ? 
+          this.getRouteLatLng(link.nr, this.plan ? this.trackService.getCoordsByTimeDiff(this.currentTrack!, this.currentTime) : this.currentCoords, false) : 
+          this.getRoute(link.nr),
         image: t.image,
         position: link.position,
         title: t.title,
@@ -361,33 +363,33 @@ export class TrackViewComponent implements AfterViewInit, OnInit  {
 
   private getRoute(nr: number | string, time?: number, videoMode?: VideoMode)
   {
+    const track = this.trackService.tracksById[nr];
     const params = {} as any;
     if (time) params.t = time;
-    params.m = videoMode || this.route.snapshot.params["m"] || this.videoMode;
-    return (['/' + nr] as any[]).concat(params.size == 0 ? [] : [params]);
-  }
-
-  private getRouteLatLng(nr: number | string, latLng: google.maps.LatLng | google.maps.LatLngLiteral | undefined, plan: boolean, videoMode?: VideoMode)
-  {
-    const params = {} as any;
-    const track = this.trackService.tracksById[nr];
-    if (latLng)
-    {
-      if (plan)
-        params.t = this.trackService.getClosestCoords(latLng, track.planCoordsTrackOnly)?.timeDiff;
-      else
-        params.t = this.trackService.convertTimeDiffFromRT(track.navigate ? this.trackService.tracksById[track.navigate] : track, 
-          this.trackService.getClosestCoords(latLng, track.coordsTrackOnly)?.timeDiff!);
-      if (!params.t || params.t < 0) params.t = 0;
-    }
     params.m = videoMode || this.route.snapshot.params["m"] || this.videoMode;
     return (['/' + (track.navigate || nr)] as any[]).concat(params.size == 0 ? [] : [params]);
   }
 
+  private getRouteLatLng(nr: number | string, latLng?: google.maps.LatLng | google.maps.LatLngLiteral, plan?: boolean, videoMode?: VideoMode)
+  {
+    const track = this.trackService.tracksById[nr];
+    let time: number | undefined;
+    if (latLng)
+    {
+      if (plan)
+        time = this.trackService.getClosestCoords(latLng, track.planCoordsTrackOnly)?.timeDiff;
+      else
+        time = this.trackService.convertTimeDiffFromRT(track.navigate ? this.trackService.tracksById[track.navigate] : track, 
+          this.trackService.getClosestCoords(latLng, track.coordsTrackOnly)?.timeDiff!);
+      if (!time || time < 0) time = 0;
+    }
+    return this.getRoute(nr, time, videoMode);
+  }
+
   public getCurrentLinks(position?: string)
   {
-   return this.getLinkItems((this.currentNavigation?.links||[]).filter(link => position == null || link.position == position)).filter(link => {
-     if (this.autoMode && link.nr == this.randomDest) 
+   return this.getLinkItems((this.currentNavigation?.links||[]).filter(link => position == null || link.position == position), true).filter(link => {
+     if (this.autoMode && link.nr == this.randomDest && this.currentTime > this.currentNavigation!.timeDiff + 3) 
      {
        this.randomDest = undefined;
        this.router.navigate(link.route);
@@ -405,16 +407,16 @@ export class TrackViewComponent implements AfterViewInit, OnInit  {
 
   public getAllLinks()
   {
-    if (!this.allLinks) this.allLinks = this.getAllLinksFrom();
+    if (!this.allLinks) this.allLinks = this.getAllLinksFrom(true);
     return this.allLinks;
   }
 
-  public getAllLinksFrom(start?: number)
+  public getAllLinksFrom(includeDisabled: boolean, start?: number)
   {
     const keys = new Set<string | number>();
     return this.currentTrack?.navigation?.
       filter(n => start == null || n.timeDiff >= start).
-      flatMap(n => this.getLinkItems(n.links || [])).filter(l => !l.disabled).filter(l => keys.size != keys.add(l.nr).size)
+      flatMap(n => this.getLinkItems(n.links || [], false)).filter(l => includeDisabled || !l.disabled).filter(l => keys.size != keys.add(l.nr).size)
   }
 
   public onLinkMouseOver(id: string | number)
@@ -441,11 +443,6 @@ export class TrackViewComponent implements AfterViewInit, OnInit  {
     else
       this.componentContainer.nativeElement.requestFullscreen();
   }
-
-  /*public onChange360()
-  {
-    this.router.navigate(this.getRoute(this.currentTrack!.nr, this.currentTime, !this.mode360));
-  }*/
 
   public get isVideo()
   {

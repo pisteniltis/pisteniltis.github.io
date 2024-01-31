@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { TrackGuard } from './track.guard';
 import { TrackViewComponent } from './track-view/track-view.component';
+import { environment } from 'src/environments/environment';
 
 const routes: Routes = [
   { path: "", pathMatch: "full", canActivate: [TrackGuard], component: TrackViewComponent },
@@ -9,7 +10,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { useHash: false })],
+  imports: [RouterModule.forRoot(routes, { useHash: !environment.production })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
