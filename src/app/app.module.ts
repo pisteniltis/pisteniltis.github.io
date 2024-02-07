@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { GoogleMapsModule } from '@angular/google-maps';
@@ -19,11 +19,13 @@ import { AppComponent } from './app.component';
 
 import { TrackViewComponent } from './track-view/track-view.component';
 import { FormsModule } from '@angular/forms';
+import { VRViewComponent } from './vr-view/vr-view.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    TrackViewComponent
+    TrackViewComponent,
+    VRViewComponent
   ],
   imports: [
     BrowserModule,
@@ -42,6 +44,9 @@ import { FormsModule } from '@angular/forms';
     MatSelectModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  schemas: [
+    CUSTOM_ELEMENTS_SCHEMA
+  ],
 })
 export class AppModule { }
